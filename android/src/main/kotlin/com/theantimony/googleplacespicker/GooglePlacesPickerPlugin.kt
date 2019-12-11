@@ -21,9 +21,12 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.lang.Exception
-
+//import android.util.Log
 
 class GooglePlacesPickerPlugin() : MethodCallHandler, PluginRegistry.ActivityResultListener {
+
+//    private val TAG = "GooglePlacesPickerPlugin"
+
     lateinit var mActivity: Activity
     private var mResult: Result? = null
     private val mFilterTypes = mapOf(
@@ -91,6 +94,7 @@ class GooglePlacesPickerPlugin() : MethodCallHandler, PluginRegistry.ActivityRes
         val fields = listOf(
                 Place.Field.ID,
                 Place.Field.ADDRESS,
+                Place.Field.ADDRESS_COMPONENTS,
                 Place.Field.NAME,
                 Place.Field.LAT_LNG
         )
@@ -144,6 +148,21 @@ class GooglePlacesPickerPlugin() : MethodCallHandler, PluginRegistry.ActivityRes
             placeMap.put("id", place.id ?: "")
             placeMap.put("name", place.name ?: "")
             placeMap.put("address", place.address ?: "")
+            //Log.v(TAG, place?.addressComponents?.asList().toString())
+            if(place.addressComponents != null) {
+                for(c in place.addressComponents!!.asList()) {
+                    if(c.getTypes().contains("country")) {
+                        placeMap.put("countryCode", c.getShortName() ?: "")
+                        placeMap.put("country", c.getName() ?: "")
+                    }
+                    if(c.getTypes().contains("locality")) {
+                        placeMap.put("locality", c.getName() ?: "")
+                    }
+                    if(c.getTypes().contains("administrative_area_level_3") || c.getTypes().contains("administrative_area_level_2")) {
+                        placeMap.put("administrativeArea", c.getName() ?: "")
+                    }
+                }
+            }
             mResult?.success(placeMap)
             return true
         } else if (p1 == AutocompleteActivity.RESULT_ERROR && p2 != null) {

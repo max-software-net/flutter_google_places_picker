@@ -7,7 +7,11 @@ class Place {
   double longitude;
   String id;
   String name;
+  String administrativeArea;
+  String locality;
   String address;
+  String country;
+  String countryCode;
 }
 
 enum PlaceAutocompleteMode { MODE_OVERLAY, MODE_FULLSCREEN }
@@ -64,14 +68,22 @@ class PluginGooglePlacePicker {
         ..id = placeMap["id"]
         ..address = placeMap["address"]
         ..latitude = placeMap["latitude"]
-        ..longitude = placeMap["longitude"];
+        ..longitude = placeMap["longitude"]
+        ..locality = placeMap["locality"]
+        ..administrativeArea = placeMap["administrativeArea"]
+        ..country = placeMap["country"]
+        ..countryCode = placeMap["countryCode"];
     } else {
       return new Place()
         ..name = placeMap["name"]
         ..id = placeMap["id"]
         ..address = placeMap["address"]
         ..latitude = double.parse(placeMap["latitude"])
-        ..longitude = double.parse(placeMap["longitude"]);
+        ..longitude = double.parse(placeMap["longitude"])
+        ..locality = placeMap["locality"]
+        ..administrativeArea = placeMap["administrativeArea"]
+        ..country = placeMap["country"]
+        ..countryCode = placeMap["countryCode"];
     }
   }
 
